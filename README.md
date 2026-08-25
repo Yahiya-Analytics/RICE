@@ -1,4 +1,4 @@
-# 🍚 RICE — Declarative LLM/RAG Configuration Engine
+# 🍚 RICE — Declarative LLM/RAG Configuration Engine (v1)
 
 > *"Ricing, but for AI pipelines."*
 
@@ -6,6 +6,11 @@ RICE is an open-source declarative configuration engine that lets you define
 complex AI pipelines through a single TOML file — eliminating manual setup,
 dependency hell, and configuration overhead.
 
+---
+## Demo
+![RICE Pipeline Demo](demo.gif)
+
+---
 ```toml
 # This is all you write. RICE handles the rest.
 
