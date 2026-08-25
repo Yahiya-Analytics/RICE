@@ -1,0 +1,97 @@
+[project]
+name = "rice-poc"
+version = "0.1.0"
+
+[runtime]
+execution = "sequential"
+ram_budget_gb = 6
+cache_between_stages = true
+auto_cleanup = true
+
+#1.Ingestion
+[ingestion]
+source = "./data/"
+formats = ["pdf"]
+batch_size = 5
+
+  [ingestion.parser]
+  tool = "docling"
+
+  [ingestion.cache]
+  enabled = true
+  cache_dir = ".rice_cache/ingestion"
+
+#2.Chunking
+[chunking]
+strategy = "recursive"          # pure python, no container needed,simplest to prove first
+
+  [chunking.recursive]
+  target_tokens = 512
+  overlap_tokens = 50
+
+  [chunking.cache]
+  enabled = true
+  cache_dir = ".rice_cache/chunking"
+
+#3.Embeddings
+[embeddings]
+provider = "huggingface"
+model = "BAAI/bge-small-en-v1.5" # small = fast on your machine
+type = "dense"
+
+  [embeddings.serving]
+  backend = "infinity"
+  host = "localhost"
+  port = 7997
+
+  [embeddings.model_params]
+  dimensions = 384               # bge-small is 384 not 1024
+  normalize = true
+  batch_size = 32
+
+  [embeddings.cache]
+  enabled = true
+  cache_dir = ".rice_cache/embeddings"
+
+#4.Vector DB
+[vector_db]
+backend = "chroma"              # pure python, no container, zero setup
+mode = "local"                  
+  [vector_db.local]
+  path = ".rice_cache/vectordb"
+
+  [vector_db.index]
+  metric = "cosine"
+  dimensions = 384               # must match embeddings
+
+#5.Retrieval
+[retrieval]
+top_k = 2
+strategy = "dense"              # simplest, no hybrid yet
+
+  [retrieval.output]
+  return_chunks = true
+  return_scores = true
+  return_metadata = true
+
+#6.LLM
+[llm]
+provider = "local"
+model = "llama3.2:3b"          # fits in your RAM
+
+  [llm.local]
+  backend = "ollama"
+  host = "localhost"
+  port = 11434
+  context_length = 4096
+
+  [llm.sampling]
+  temperature = 0.3
+  max_tokens = 512
+
+  [llm.prompt]
+  system = """
+  You are a helpful assistant.
+  Answer only from the provided context.
+  If the answer is not in context say I don't know.
+  """

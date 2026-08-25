@@ -1,0 +1,4 @@
+requests
+psutil
+chromadb
+tomllib
