@@ -67,40 +67,40 @@ rice.toml → Parser → Orchestrator → Adapters → Containers → Answer
 
 ```
 ┌─────────────────────────────────────────────┐
-│                 rice.toml                    │
-│            (user writes this only)           │
+│                 rice.toml                   │
+│            (user writes this only)          │
 └──────────────────┬──────────────────────────┘
                    ↓
 ┌─────────────────────────────────────────────┐
-│                  Parser                      │
-│         TOML → dict → Python objects         │
+│                  Parser                     │
+│         TOML → dict → Python objects        │
 └──────────────────┬──────────────────────────┘
                    ↓
 ┌─────────────────────────────────────────────┐
-│               Orchestrator                   │
-│   Runs stages sequentially, manages RAM,     │
-│   starts/stops containers, caches to disk    │
+│               Orchestrator                  │
+│   Runs stages sequentially, manages RAM,    │
+│   starts/stops containers, caches to disk   │
 └──────────────────┬──────────────────────────┘
                    ↓
 ┌─────────────────────────────────────────────┐
-│                 Adapters                     │
-│   Thin HTTP clients — one per stage          │
-│   Zero tool knowledge, just HTTP calls       │
+│                 Adapters                    │
+│   Thin HTTP clients — one per stage         │
+│   Zero tool knowledge, just HTTP calls      │
 └──────────────────┬──────────────────────────┘
                    ↓
 ┌─────────────────────────────────────────────┐
-│            Podman Containers                 │
-│   Heavy tools run here, isolated             │
-│   Released after each stage completes        │
-│                                              │
+│            Podman Containers                │
+│   Heavy tools run here, isolated            │
+│   Released after each stage completes       │
+│                                             │
 │  ┌──────────────┐  ┌──────────────┐         │
 │  │  Ingestion   │  │  Embeddings  │         │
 │  │  (Docling)   │  │ (BGE-small)  │         │
 │  └──────────────┘  └──────────────┘         │
-│  ┌──────────────┐                            │
-│  │     LLM      │                            │
-│  │   (Ollama)   │                            │
-│  └──────────────┘                            │
+│  ┌──────────────┐                           │
+│  │     LLM      │                           │
+│  │   (Ollama)   │                           │
+│  └──────────────┘                           │
 └─────────────────────────────────────────────┘
 ```
 
