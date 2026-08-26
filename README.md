@@ -291,14 +291,47 @@ Zero code changes. Just TOML.
 
 ---
 
-## Contributing
-
-RICE is early stage and contributions are welcome. Each new tool
-is just a new adapter class + one registry entry. If you add support
-for a new vector db, chunking strategy, or ingestion tool open a PR.
-
+## 🤝 Contributing
+ 
+RICE is early stage and contributions are welcome.
+ 
+Each new tool is just:
+- A new adapter class (~50 lines)
+- One line in the registry
+If you add support for a new vector DB, chunking strategy, ingestion tool, or LLM provider — open a PR.
+ 
+**What's needed most right now:**
+- Unstructured and Marker ingestion adapters
+- Qdrant container + adapter
+- Semantic chunking adapter
+- HyDE and reranking retrieval implementations
 ---
+ 
+## 📜 License
+[![License: CC BY-NC-SA 4.0](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+ 
+**Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International**
+ 
+This project is licensed under **CC BY-NC-SA 4.0**. In plain language:
+ 
+| | Term | What It Means |
+|---|---|---|
+| ✅ | **Free to use** | Use RICE for personal, research, or educational projects |
+| ✅ | **Free to modify** | Fork it, extend it, add new adapters, build on top of it |
+| ✅ | **Free to share** | Share the original or your modified version freely |
+| 📌 | **Attribution (BY)** | Credit the original project and author when using or sharing |
+| ❌ | **Non-Commercial (NC)** | Cannot sell RICE, offer it as paid SaaS, or embed it commercially |
+| 🔄 | **Share-Alike (SA)** | Modified versions must carry the same CC BY-NC-SA license |
+ 
+> **Why this license?**
+> RICE is built to stay open. The NC clause prevents anyone from taking the project and monetising it without contributing back. The SA clause ensures community improvements remain part of the commons — no one can fork it closed.
+ 
+Full license text → [creativecommons.org/licenses/by-nc-sa/4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+ 
+---
+ 
+<div align="center">
 
-## License
-
-MIT
+*If RICE saves you time, a ⭐ on GitHub goes a long way.*
+ 
+</div>
