@@ -1,0 +1,7 @@
+.rice_cache/
+logs/
+.venv/
+dist/
+*.pyc
+*.egg-info/
+__pycache__/
