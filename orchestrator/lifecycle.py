@@ -13,7 +13,7 @@ from registry.registry import (
 
 class Lifecycle:
 
-    # ── Preflight ─────────────────────────
+    #Preflight
     def preflight(self, stages: list):
         print("\n Preflight checks...")
         for stage in stages:
@@ -27,7 +27,7 @@ class Lifecycle:
                     )
         print(" Preflight complete\n")
 
-    # ── RAM check ─────────────────────────
+    #RAM check
     def check_ram(self, stage: str, budget_gb: float):
         available = psutil.virtual_memory().available / (1024**3)
         required  = RAM_REQUIREMENTS.get(stage, 1.0)
@@ -39,15 +39,19 @@ class Lifecycle:
                 f"Need {required}GB have {available:.1f}GB"
             )
 
-    # ── Start container ───────────────────
+    #Start container
     def start(self, stage: str):
         if not NEEDS_CONTAINER.get(stage):
             print(f" {stage}=pure Python, no container")
             return
         container_name = f"rice_{stage}"
 
+        cache_dirs = VOLUME_REGISTRY.get(stage, [])
+        for vol_spec in cache_dirs:
+            host_path = vol_spec.split(":")[0]
+            os.makedirs(host_path, exist_ok=True) 
+
         subprocess.run(["podman", "rm", "-f", container_name],capture_output=True)   # suppress output if not found 
-        import time
         time.sleep(1)
         image   = IMAGE_REGISTRY[stage]
         ports   = PORT_REGISTRY.get(stage, ())
@@ -64,15 +68,14 @@ class Lifecycle:
             cmd += ["-v", vol]
 
         cmd.append(image)
-
         print(f" Starting {stage}...")
         print(f"   cmd: {' '.join(cmd)}")
-
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
             raise RuntimeError(f" Failed to start {stage}: \n {result.stderr}")
         print(f"   container id: {result.stdout.strip()[:12]}")
-    # ── Health check ──────────────────────
+
+    #Health check
     def health_check(self, stage: str, retries: int = 15):
         if not NEEDS_CONTAINER.get(stage):
             return
@@ -92,7 +95,7 @@ class Lifecycle:
         subprocess.run(["podman", "logs", f"rice_{stage}"])
         raise RuntimeError(f" {stage} failed to start after {retries} retries")
 
-    # ── Stop container ────────────────────
+    # Stop container 
     def stop(self, stage: str):
         if not NEEDS_CONTAINER.get(stage):
             return
@@ -104,7 +107,7 @@ class Lifecycle:
         )
         self._log_ram(stage)
 
-    # ── Cache helpers ─────────────────────
+    # Cache helpers 
     def save_cache(self, stage: str, data, cache_dir: str):
         os.makedirs(cache_dir, exist_ok=True)
         path = os.path.join(cache_dir, "output.json")
@@ -124,7 +127,7 @@ class Lifecycle:
         print(f" Loaded {stage} cache from {path}")
         return data
 
-    # ── RAM logger ────────────────────────
+    # RAM logger
     def _log_ram(self, after_stage: str):
         ram  = psutil.virtual_memory()
         used = ram.used / (1024**3)
